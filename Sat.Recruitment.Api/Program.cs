@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace Sat.Recruitment.Api
     {
         public static void Main(string[] args)
         {
+
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -22,6 +24,14 @@ namespace Sat.Recruitment.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                }).ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Debug);
+                }).UseSerilog((HostBuilderContext context, LoggerConfiguration loggerConfiguration) =>
+                {
+                    loggerConfiguration.ReadFrom.Configuration(context.Configuration);
                 });
     }
 }
